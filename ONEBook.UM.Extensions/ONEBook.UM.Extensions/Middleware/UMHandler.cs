@@ -18,7 +18,7 @@ namespace ONEBook.UM.Extensions.Middleware
             _next = next;
             _maintenanceService = maintenanceService;
         }
-
+        
         public async Task Invoke(HttpContext context)
         {
             var path = context.Request.Path;

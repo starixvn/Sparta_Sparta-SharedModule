@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{22D299FE-3858-4DDD-9894-5B93B0BAE154}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEBook.UM.Extensions", "ONEBook.UM.Extensions\ONEBook.UM.Extensions.csproj", "{7CBF31AD-379E-4483-A9CD-97F5FE2A3717}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEBook.UM.Extensions.UnitTests", "ONEBook.UM.Extensions.UnitTests\ONEBook.UM.Extensions.UnitTests.csproj", "{CFE34071-FCB5-43D5-B4DE-04E397410152}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7CBF31AD-379E-4483-A9CD-97F5FE2A3717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CBF31AD-379E-4483-A9CD-97F5FE2A3717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CBF31AD-379E-4483-A9CD-97F5FE2A3717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CBF31AD-379E-4483-A9CD-97F5FE2A3717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFE34071-FCB5-43D5-B4DE-04E397410152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFE34071-FCB5-43D5-B4DE-04E397410152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFE34071-FCB5-43D5-B4DE-04E397410152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFE34071-FCB5-43D5-B4DE-04E397410152}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CFE34071-FCB5-43D5-B4DE-04E397410152} = {22D299FE-3858-4DDD-9894-5B93B0BAE154}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AFAC68BC-C32D-4BDD-BAEA-6A2CC51D36D1}
+	EndGlobalSection
+EndGlobal

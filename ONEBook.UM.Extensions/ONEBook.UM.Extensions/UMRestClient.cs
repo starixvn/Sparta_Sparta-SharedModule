@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
 
@@ -15,12 +14,6 @@ namespace ONEBook.UM.Extensions
         private readonly UMClientConfiguration _umConfiguration;
         private readonly IPHelper _ipHelper;
         private readonly string _umClientName;
-
-        private static readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            DateTimeZoneHandling = DateTimeZoneHandling.Unspecified
-        };
 
         public UMRestClient(
             string clientName,

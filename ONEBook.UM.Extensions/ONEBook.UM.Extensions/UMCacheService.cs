@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
-using MsgPack.Serialization;
 using ONEbook.UM.Helpers;
 
 namespace ONEBook.UM.Extensions
@@ -9,11 +9,6 @@ namespace ONEBook.UM.Extensions
     {
         private readonly string _prefix;
         private readonly IDistributedCache _cache;
-
-        private static readonly SerializationContext _msgPackSerializationContext = new SerializationContext
-        {
-            DefaultDateTimeConversionMethod = DateTimeConversionMethod.Native
-        };
 
         public UMCacheService(string siteId, IDistributedCache cache)
         {
@@ -28,17 +23,16 @@ namespace ONEBook.UM.Extensions
             {
                 return default(T);
             }
-
-            var serializer = MessagePackSerializer.Get<T>(_msgPackSerializationContext);
-            return serializer.UnpackSingleObject(data);
+            var content = Encoding.UTF8.GetString(data);
+            return Serializer.Deserialize<T>(content);
         }
 
         public void Set<T>(string key, T value, TimeSpan absoluteExpiration)
         {
             if (!Equals(value, default(T)))
             {
-                var serializer = MessagePackSerializer.Get<T>(_msgPackSerializationContext);
-                var data = serializer.PackSingleObject(value);
+                var content = Serializer.Serialize(value);
+                var data = Encoding.UTF8.GetBytes(content);
 
                 _cache.Set(_prefix + key, data, new DistributedCacheEntryOptions
                 {

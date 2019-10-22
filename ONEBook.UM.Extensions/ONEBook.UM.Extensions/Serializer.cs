@@ -26,11 +26,6 @@ namespace ONEBook.UM.Extensions
 
         internal static T Deserialize<T>(string content)
         {
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                return default(T);
-            }
-
             using (var stringReader = new StringReader(content))
             {
                 using (var jsonTextReader = new JsonTextReader(stringReader))

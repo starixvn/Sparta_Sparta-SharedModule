@@ -4,7 +4,7 @@ using Moq;
 using ONEbook.UM.Helpers;
 using Xunit;
 
-namespace Fanex.Athena.UMClient.UnitTests
+namespace ONEBook.UM.Extensions.UnitTests
 {
     public class UMHttpContextHelperTest
     {

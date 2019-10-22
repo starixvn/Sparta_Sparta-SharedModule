@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
 
-namespace Fanex.Athena.UMClient
+namespace ONEBook.UM.Extensions
 {
     public class UMRestClient : IUMRestClient
     {

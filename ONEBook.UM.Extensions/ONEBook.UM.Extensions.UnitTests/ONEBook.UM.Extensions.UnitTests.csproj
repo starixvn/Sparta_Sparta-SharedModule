@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fanex.Athena.UMClient\Fanex.Athena.UMClient.csproj" />
+    <ProjectReference Include="..\ONEBook.UM.Extensions\ONEBook.UM.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

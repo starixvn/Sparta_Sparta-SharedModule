@@ -4,7 +4,7 @@ using Moq;
 using MsgPack.Serialization;
 using Xunit;
 
-namespace Fanex.Athena.UMClient.UnitTests
+namespace ONEBook.UM.Extensions.UnitTests
 {
     public class UMCacheServiceTest
     {

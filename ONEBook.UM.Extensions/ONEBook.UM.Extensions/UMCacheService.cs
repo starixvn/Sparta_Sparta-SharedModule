@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using MsgPack.Serialization;
 using ONEbook.UM.Helpers;
 
-namespace Fanex.Athena.UMClient
+namespace ONEBook.UM.Extensions
 {
     public class UMCacheService : IUMCacheService
     {

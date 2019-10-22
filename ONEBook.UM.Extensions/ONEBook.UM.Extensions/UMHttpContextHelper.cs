@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using ONEbook.UM.Helpers;
 
-namespace Fanex.Athena.UMClient
+namespace ONEBook.UM.Extensions
 {
     public class UMHttpContextHelper : IHttpContextHelper
     {

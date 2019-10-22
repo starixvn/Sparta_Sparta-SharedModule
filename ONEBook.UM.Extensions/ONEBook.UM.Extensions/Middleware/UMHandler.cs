@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using ONEbook.UM.Services;
 
-namespace Fanex.Athena.UMClient.Middleware
+namespace ONEBook.UM.Extensions.Middleware
 {
     /// <summary>
     /// UMHandler middleware skips all routes contain "/Error"

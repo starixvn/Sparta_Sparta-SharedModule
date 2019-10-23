@@ -10,18 +10,17 @@ namespace ONEBook.UM.Extensions
 {
     public class UMRestClient : IUMRestClient
     {
+        public const string UMClientName = "UMClient";
+
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly UMClientConfiguration _umConfiguration;
         private readonly IPHelper _ipHelper;
-        private readonly string _umClientName;
 
         public UMRestClient(
-            string clientName,
             UMClientConfiguration configuration,
             IPHelper ipHelper,
             IHttpClientFactory httpClientFactory)
         {
-            _umClientName = clientName;
             _ipHelper = ipHelper;
             _umConfiguration = configuration;
             _httpClientFactory = httpClientFactory;
@@ -51,7 +50,7 @@ namespace ONEBook.UM.Extensions
         {
             ValidateEndPoint(endPoint);
 
-            using (var client = _httpClientFactory.CreateClient(_umClientName))
+            using (var client = _httpClientFactory.CreateClient(UMClientName))
             {
                 using (var request = new HttpRequestMessage(method, new Uri(client.BaseAddress + endPoint)))
                 {

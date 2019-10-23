@@ -1,11 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
 
@@ -13,24 +10,17 @@ namespace ONEBook.UM.Extensions
 {
     public class UMRestClient : IUMRestClient
     {
+        public const string UMClientName = "UMClient";
+
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly UMClientConfiguration _umConfiguration;
         private readonly IPHelper _ipHelper;
-        private readonly string _umClientName;
-
-        private static readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            DateTimeZoneHandling = DateTimeZoneHandling.Unspecified
-        };
 
         public UMRestClient(
-            string clientName,
             UMClientConfiguration configuration,
             IPHelper ipHelper,
             IHttpClientFactory httpClientFactory)
         {
-            _umClientName = clientName;
             _ipHelper = ipHelper;
             _umConfiguration = configuration;
             _httpClientFactory = httpClientFactory;
@@ -60,7 +50,7 @@ namespace ONEBook.UM.Extensions
         {
             ValidateEndPoint(endPoint);
 
-            using (var client = _httpClientFactory.CreateClient(_umClientName))
+            using (var client = _httpClientFactory.CreateClient(UMClientName))
             {
                 using (var request = new HttpRequestMessage(method, new Uri(client.BaseAddress + endPoint)))
                 {
@@ -72,7 +62,7 @@ namespace ONEBook.UM.Extensions
 
                     if (data != null)
                     {
-                        request.Content = CreateJsonContent(data);
+                        request.Content = new StringContent(Serializer.Serialize(data), Encoding.UTF8, "application/json");
                     }
 
                     var response = await client.SendAsync(request, CancellationToken.None).ConfigureAwait(false);
@@ -82,7 +72,7 @@ namespace ONEBook.UM.Extensions
                         {
                             response.EnsureSuccessStatusCode();
                             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            return Deserialize<T>(content);
+                            return Serializer.Deserialize<T>(content);
                         }
                     }
                     catch (Exception ex)
@@ -92,7 +82,6 @@ namespace ONEBook.UM.Extensions
                     }
                 }
             }
-
         }
 
         private static void ValidateEndPoint(string endPoint)
@@ -100,31 +89,6 @@ namespace ONEBook.UM.Extensions
             if (string.IsNullOrWhiteSpace(endPoint))
             {
                 throw new ArgumentNullException(nameof(endPoint));
-            }
-        }
-
-        private static HttpContent CreateJsonContent(object obj)
-        {
-            using (var stringWriter = new StringWriter())
-            {
-                using (var jsonWriter = new JsonTextWriter(stringWriter))
-                {
-                    var serializer = JsonSerializer.Create(_serializerSettings);
-                    serializer.Serialize(jsonWriter, obj);
-                    return new StringContent(stringWriter.ToString(), Encoding.UTF8, "application/json");
-                }
-            }
-        }
-
-        private static T Deserialize<T>(string content)
-        {
-            using (var stringReader = new StringReader(content))
-            {
-                using (var jsonTextReader = new JsonTextReader(stringReader))
-                {
-                    var serializer = JsonSerializer.Create(_serializerSettings);
-                    return serializer.Deserialize<T>(jsonTextReader);
-                }
             }
         }
     }

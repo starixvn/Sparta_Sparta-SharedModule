@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
-using MsgPack.Serialization;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace ONEBook.UM.Extensions.UnitTests
@@ -39,12 +40,11 @@ namespace ONEBook.UM.Extensions.UnitTests
                 Value2 = "test-um-cache",
                 Value3 = new DateTime(2000, 3, 4)
             };
-            var serializer = MessagePackSerializer.Get<UMCacheSampleTestClass>(new SerializationContext
+            var json = JsonConvert.SerializeObject(sampleData, new JsonSerializerSettings
             {
-                DefaultDateTimeConversionMethod = DateTimeConversionMethod.Native
+                DateTimeZoneHandling = DateTimeZoneHandling.Unspecified
             });
-
-            _mockCache.Setup(r => r.Get("site-456UMSession_mytestkey")).Returns(serializer.PackSingleObject(sampleData));
+            _mockCache.Setup(r => r.Get("site-456UMSession_mytestkey")).Returns(Encoding.UTF8.GetBytes(json));
             var um = new UMCacheService("site-456", _mockCache.Object);
 
             // Action
@@ -82,11 +82,11 @@ namespace ONEBook.UM.Extensions.UnitTests
                 Value2 = "2",
                 Value3 = new DateTime(3, 4, 5)
             };
-            var serializer = MessagePackSerializer.Get<UMCacheSampleTestClass>(new SerializationContext
+            var json = JsonConvert.SerializeObject(testObject, new JsonSerializerSettings
             {
-                DefaultDateTimeConversionMethod = DateTimeConversionMethod.Native
+                DateTimeZoneHandling = DateTimeZoneHandling.Unspecified
             });
-            var expectedData = serializer.PackSingleObject(testObject);
+            var expectedData = Encoding.UTF8.GetBytes(json);
 
             DistributedCacheEntryOptions actualOptions = null;
             byte[] actualData = null;

@@ -34,7 +34,7 @@ namespace ONEBook.UM.Extensions.UnitTests
             HttpRequestMessage actual = null;
             string messageContent = null;
             _mockClient.Object.BaseAddress = new Uri("http://test.com/v2");
-            _mockHttpClientFactory.Setup(r => r.CreateClient("test-name-2")).Returns(_mockClient.Object);
+            _mockHttpClientFactory.Setup(r => r.CreateClient("UMClient")).Returns(_mockClient.Object);
             _mockClient.Setup(r => r.SendAsync(It.IsAny<HttpRequestMessage>(), CancellationToken.None))
                 .ReturnsAsync(new HttpResponseMessage { Content = new StringContent("{}") })
                 .Callback<HttpRequestMessage, CancellationToken>(async (request, _) =>
@@ -44,11 +44,7 @@ namespace ONEBook.UM.Extensions.UnitTests
                 })
                 .Verifiable();
 
-            var um = new UMRestClient(
-                "test-name-2",
-                _fakeUMClientConfiguration,
-                _mockIPHelper.Object,
-                _mockHttpClientFactory.Object);
+            var um = CreateUMRestClient();
 
             // Action
             await um.ExecutePostAsync<SampleTestClass>("/test/456", new SampleTestClass { Time = testTime });
@@ -65,17 +61,13 @@ namespace ONEBook.UM.Extensions.UnitTests
             // Arrange
             HttpRequestMessage actual = null;
             _mockClient.Object.BaseAddress = new Uri("http://test.com/v1/api");
-            _mockHttpClientFactory.Setup(r => r.CreateClient("test-name-1")).Returns(_mockClient.Object);
+            _mockHttpClientFactory.Setup(r => r.CreateClient("UMClient")).Returns(_mockClient.Object);
             _mockClient.Setup(r => r.SendAsync(It.IsAny<HttpRequestMessage>(), CancellationToken.None))
                 .ReturnsAsync(new HttpResponseMessage { Content = new StringContent("{}") })
                 .Callback<HttpRequestMessage, CancellationToken>((a, _) => actual = a)
                 .Verifiable();
 
-            var um = new UMRestClient(
-                "test-name-1",
-                _fakeUMClientConfiguration,
-                _mockIPHelper.Object,
-                _mockHttpClientFactory.Object);
+            var um = CreateUMRestClient();
 
             // Action
             await um.ExecuteGetAsync<SampleTestClass>("/test/123");
@@ -183,7 +175,6 @@ namespace ONEBook.UM.Extensions.UnitTests
         private UMRestClient CreateUMRestClient()
         {
             return new UMRestClient(
-                "test-client-name",
                 _fakeUMClientConfiguration,
                 _mockIPHelper.Object,
                 _mockHttpClientFactory.Object);

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Newtonsoft.Json;
+using ONEbook.UM.Extensions.Middleware;
 using ONEbook.UM.Models;
 using ONEbook.UM.Services;
-using ONEbook.UM.Extensions.Middleware;
 using Xunit;
 
 namespace ONEbook.UM.Extensions.UnitTests.Middleware
@@ -32,21 +32,6 @@ namespace ONEbook.UM.Extensions.UnitTests.Middleware
             {
                 yield return new object[] { PathString.Empty };
                 yield return new object[] { PathString.FromUriComponent("/test/error/404") };
-            }
-        }
-
-        public static IEnumerable<object[]> AjaxRequestHeaders
-        {
-            get
-            {
-                var mockHeader = new Mock<IHeaderDictionary>();
-                mockHeader.SetupGet(r => r["X-Requested-With"]).Returns("XMLHttpRequest");
-                yield return new[] { mockHeader.Object };
-
-                mockHeader.Reset();
-                mockHeader.SetupGet(r => r["Accept"]).Returns("*/*");
-                mockHeader.SetupGet(r => r["Sec-Fetch-Mode"]).Returns("cors");
-                yield return new[] { mockHeader.Object };
             }
         }
 
@@ -123,9 +108,8 @@ namespace ONEbook.UM.Extensions.UnitTests.Middleware
             mockResponse.VerifySet(r => r.ContentType = "text/html");
         }
 
-        [Theory]
-        [MemberData(nameof(AjaxRequestHeaders))]
-        public async Task Invoke_UMWithAjaxrequest_JsonMessage(IHeaderDictionary headers)
+        [Fact]
+        public async Task Invoke_UMWithAjaxrequest_JsonMessage()
         {
             // Arrange
             var mockResponse = new Mock<HttpResponse>();
@@ -134,7 +118,10 @@ namespace ONEbook.UM.Extensions.UnitTests.Middleware
             mockResponse.SetupGet(r => r.Body).Returns(memoryStream);
             _mockContext.SetupGet(r => r.Response).Returns(mockResponse.Object);
             _mockRequest.SetupGet(r => r.Path).Returns(PathString.FromUriComponent("/test-ajax"));
-            _mockRequest.SetupGet(r => r.Headers).Returns(headers);
+
+            var mockHeader = new Mock<IHeaderDictionary>();
+            mockHeader.SetupGet(r => r["X-Requested-With"]).Returns("XMLHttpRequest");
+            _mockRequest.SetupGet(r => r.Headers).Returns(mockHeader.Object);
 
             _mockMaintenanceService.Setup(r => r.IsUnderMaintenanceAsync()).ReturnsAsync(true);
             _mockMaintenanceService.Setup(r => r.GetUnderMaintenanceTimeAsync()).ReturnsAsync(new UnderMaintenanceTime

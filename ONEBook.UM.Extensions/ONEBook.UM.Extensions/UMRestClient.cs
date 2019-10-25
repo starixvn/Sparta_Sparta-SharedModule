@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
 
-namespace ONEBook.UM.Extensions
+namespace ONEbook.UM.Extensions
 {
     public class UMRestClient : IUMRestClient
     {

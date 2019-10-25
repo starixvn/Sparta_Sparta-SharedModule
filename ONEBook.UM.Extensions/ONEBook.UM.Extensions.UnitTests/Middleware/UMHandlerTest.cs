@@ -7,10 +7,10 @@ using Moq;
 using Newtonsoft.Json;
 using ONEbook.UM.Models;
 using ONEbook.UM.Services;
-using ONEBook.UM.Extensions.Middleware;
+using ONEbook.UM.Extensions.Middleware;
 using Xunit;
 
-namespace ONEBook.UM.Extensions.UnitTests.Middleware
+namespace ONEbook.UM.Extensions.UnitTests.Middleware
 {
     public class UMHandlerTest
     {

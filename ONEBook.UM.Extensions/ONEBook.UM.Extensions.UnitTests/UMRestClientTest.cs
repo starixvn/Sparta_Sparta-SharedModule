@@ -8,7 +8,7 @@ using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
 using Xunit;
 
-namespace ONEBook.UM.Extensions.UnitTests
+namespace ONEbook.UM.Extensions.UnitTests
 {
     public class UMRestClientTest
     {

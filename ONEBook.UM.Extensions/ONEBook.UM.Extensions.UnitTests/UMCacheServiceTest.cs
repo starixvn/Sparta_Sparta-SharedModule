@@ -5,7 +5,7 @@ using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace ONEBook.UM.Extensions.UnitTests
+namespace ONEbook.UM.Extensions.UnitTests
 {
     public class UMCacheServiceTest
     {

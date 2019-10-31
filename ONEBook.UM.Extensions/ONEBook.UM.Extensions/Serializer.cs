@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-namespace ONEBook.UM.Extensions
+namespace ONEbook.UM.Extensions
 {
     internal static class Serializer
     {

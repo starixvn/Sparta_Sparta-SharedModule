@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using ONEbook.UM.Helpers;
 
-namespace ONEBook.UM.Extensions
+namespace ONEbook.UM.Extensions
 {
     public class UMCacheService : IUMCacheService
     {

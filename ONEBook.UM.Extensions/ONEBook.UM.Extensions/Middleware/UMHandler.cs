@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using ONEbook.UM.Models;
 using ONEbook.UM.Services;
 
-namespace ONEBook.UM.Extensions.Middleware
+namespace ONEbook.UM.Extensions.Middleware
 {
     /// <summary>
     /// UMHandler middleware skips all routes contain "/Error"
@@ -13,6 +14,7 @@ namespace ONEBook.UM.Extensions.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IMaintenanceService _maintenanceService;
+        internal static Func<HttpContext, UnderMaintenanceTime, Task> _customUmMessage;
 
         public UMHandler(RequestDelegate next, IMaintenanceService maintenanceService)
         {
@@ -27,29 +29,21 @@ namespace ONEBook.UM.Extensions.Middleware
                 await _maintenanceService.IsUnderMaintenanceAsync())
             {
                 var maintenanceTime = await _maintenanceService.GetUnderMaintenanceTimeAsync();
-                var response = context.Response;
-                string content = null;
+                var responseMessage = _customUmMessage;
 
-                if (IsAjaxRequest(context.Request))
+                if (responseMessage == null)
                 {
-                    response.ContentType = "application/json";
-                    content = JsonConvert.SerializeObject(new
+                    if (IsAjaxRequest(context.Request))
                     {
-                        IsSuccess = false,
-                        Message = "System is currently unavailable due to scheduled maintenance.\r\n" +
-                            $"This downtime will last from {maintenanceTime.From} to {maintenanceTime.To}."
-                    });
-                }
-                else
-                {
-                    response.ContentType = "text/html";
-                    content = "<div style='text-align:center;padding-top:10%'>" +
-                        "System is currently unavailable due to scheduled maintenance.<br /> " +
-                        $"This downtime will last from <b>{maintenanceTime.From}</b> &rarr; <b>{maintenanceTime.To}</b>. " +
-                        "Thanks for your patience!</div>";
+                        responseMessage = JsonMessage;
+                    }
+                    else
+                    {
+                        responseMessage = HtmlMessage;
+                    }
                 }
 
-                await response.WriteAsync(content);
+                await responseMessage(context, maintenanceTime);
             }
             else
             {
@@ -57,18 +51,33 @@ namespace ONEBook.UM.Extensions.Middleware
             }
         }
 
+        internal static Task JsonMessage(HttpContext context, UnderMaintenanceTime maintenanceTime)
+        {
+            context.Response.ContentType = "application/json";
+            var content = Serializer.Serialize(new
+            {
+                isSuccess = false,
+                message = "System is currently unavailable due to scheduled maintenance.\r\n" +
+                    $"This downtime will last from {maintenanceTime.From} to {maintenanceTime.To}."
+            });
+
+            return context.Response.WriteAsync(content);
+        }
+
+        internal static Task HtmlMessage(HttpContext context, UnderMaintenanceTime maintenanceTime)
+        {
+            context.Response.ContentType = "text/html";
+            var content = "<div style='text-align:center;padding-top:10%'>" +
+                "System is currently unavailable due to scheduled maintenance.<br /> " +
+                $"This downtime will last from <b>{maintenanceTime.From}</b> &rarr; <b>{maintenanceTime.To}</b>. " +
+                "Thanks for your patience!</div>";
+
+            return context.Response.WriteAsync(content);
+        }
+
         private static bool IsAjaxRequest(HttpRequest request)
         {
-            if (request.Headers == null)
-            {
-                return false;
-            }
-
-            var headers = request.Headers;
-            var isXhr = headers["X-Requested-With"] == "XMLHttpRequest";
-            var isFetch = headers["Accept"] == "*/*" && headers["Sec-Fetch-Mode"] == "cors";
-
-            return isXhr || isFetch;
+            return request.Headers != null && request.Headers["X-Requested-With"] == "XMLHttpRequest";
         }
     }
 }

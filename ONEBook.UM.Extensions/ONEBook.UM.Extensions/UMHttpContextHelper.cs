@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using ONEbook.UM.Helpers;
 
-namespace ONEBook.UM.Extensions
+namespace ONEbook.UM.Extensions
 {
     public class UMHttpContextHelper : IHttpContextHelper
     {

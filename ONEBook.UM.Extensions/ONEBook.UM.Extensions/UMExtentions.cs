@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using ONEbook.UM.Configurations;
+using ONEbook.UM.Extensions.Middleware;
 using ONEbook.UM.Helpers;
+using ONEbook.UM.Models;
 using ONEbook.UM.Services;
 
-namespace ONEBook.UM.Extensions
+namespace ONEbook.UM.Extensions
 {
-    public static class DIHelper
+    public static class UMExtentions
     {
         public static IServiceCollection AddUMService(this IServiceCollection services, UMClientConfiguration umClientConfigs, int requestTimeoutInSecond = 10)
         {
+            services.AddHttpContextAccessor();
             services.AddSingleton(umClientConfigs);
             services.AddSingleton<IPHelper, IPHelperImpl>();
             services.AddSingleton<IHttpContextHelper, UMHttpContextHelper>();
@@ -27,6 +33,12 @@ namespace ONEBook.UM.Extensions
             });
 
             return services;
+        }
+
+        public static IApplicationBuilder UseUMHandler(this IApplicationBuilder builder, Func<HttpContext, UnderMaintenanceTime, Task> customUMMessage = null)
+        {
+            UMHandler._customUmMessage = customUMMessage ?? UMHandler.HtmlMessage;
+            return builder.UseMiddleware<UMHandler>();
         }
     }
 }

@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ONEBook.UM.Extensions\ONEBook.UM.Extensions.csproj" />
+    <ProjectReference Include="..\ONEBook.UM.Extensions\ONEbook.UM.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

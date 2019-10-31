@@ -1,0 +1,15 @@
+﻿<?xml version="1.0"?>
+<configuration>
+  <configSections>
+    <section name="ONEbook.UM" type="ONEbook.UM.NonWebApp.Configurations.UMClientConfigurationSection, ONEbook.UM.NonWebApp" />
+  </configSections>
+  <ONEbook.UM
+    ServiceUris="http://ha.nexdev.net:8889/api"
+    EnableCheckUM="false"
+    EnableUnscheduledUM="false"
+    UMFrom="03:00"
+    UMTo="04:00"
+    SiteId="2000"
+    UMPageUrl="~/Common/Offline"/>
+</configuration>
+

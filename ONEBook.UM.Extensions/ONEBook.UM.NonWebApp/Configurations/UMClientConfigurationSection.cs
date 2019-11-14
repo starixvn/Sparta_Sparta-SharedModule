@@ -1,9 +1,13 @@
 ﻿using System.Configuration;
+using ONEbook.UM.Configurations;
 
 namespace ONEbook.UM.NonWebApp.Configurations
 {
     public class UMClientConfigurationSection : ConfigurationSection
     {
+        private static UMClientConfiguration _settings = null;
+        private static readonly object padlock = new object();
+
         private const string ServiceUrisName = "ServiceUris";
         private const string EnableCheckUMName = "EnableCheckUM";
         private const string AllowedIPListName = "AllowedIPs";
@@ -51,7 +55,34 @@ namespace ONEbook.UM.NonWebApp.Configurations
         [ConfigurationProperty(ErrorUMPageUrlName, IsRequired = false, DefaultValue = "")]
         public string ErrorUMPageUrl => (string)base[ErrorUMPageUrlName];
 
-        [ConfigurationProperty(UMTokenName, IsRequired = false, DefaultValue = "")]
-        public string UMToken => (string)base[UMTokenName];
+        public static UMClientConfiguration Settings
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    return _settings ?? (_settings = GetUmSettingsFromAppConfigs());
+                }
+            }
+        }
+
+        private static UMClientConfiguration GetUmSettingsFromAppConfigs()
+        {
+            var section = ConfigurationManager.GetSection("ONEbook.UM") as UMClientConfigurationSection;
+            return new UMClientConfiguration
+            {
+                EnableCheckUM = section.EnableCheckUM,
+                EnableUnscheduledUM = section.EnableUnscheduledUM,
+                ErrorUMPageUrl = section.ErrorUMPageUrl,
+                ResultCacheDuration = section.ResultCacheDuration,
+                SecretKey = section.SecretKey,
+                ServiceUri = section.ServiceUris,
+                SiteId = section.SiteId,
+                UMFrom = section.UMFrom,
+                UMLoggingCategory = section.UMLoggingCategory,
+                UMPageUrl = section.UMPageUrl,
+                UMTo = section.UMTo
+            };
+        }
     }
 }

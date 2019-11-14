@@ -6,11 +6,25 @@ namespace ONEbook.UM.NonWebApp
 {
     public class UMCacheService : IUMCacheService
     {
+        private static UMCacheService _instance = null;
+        private static readonly object padlock = new object();
+
         private readonly ObjectCache _cache;
 
         public UMCacheService(ObjectCache cache)
         {
             _cache = cache;
+        }
+
+        public static UMCacheService Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    return _instance ?? (_instance = new UMCacheService(MemoryCache.Default));
+                }
+            }
         }
 
         public T Get<T>(string key)

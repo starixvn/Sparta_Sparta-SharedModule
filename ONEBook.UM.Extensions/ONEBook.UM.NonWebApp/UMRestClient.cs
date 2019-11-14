@@ -2,12 +2,16 @@
 using System.Threading.Tasks;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Helpers;
+using ONEbook.UM.NonWebApp.Configurations;
 using RestSharp;
 
 namespace ONEbook.UM.NonWebApp
 {
     public class UMRestClient : IUMRestClient
     {
+        private static UMRestClient _instance = null;
+        private static readonly object padlock = new object();
+
         private readonly IRestClient _httpClient;
         private readonly UMClientConfiguration _umConfiguration;
         private readonly IPHelper _ipHelper;
@@ -20,6 +24,17 @@ namespace ONEbook.UM.NonWebApp
             _ipHelper = ipHelper;
             _umConfiguration = configuration;
             _httpClient = httpClient;
+        }
+
+        public static UMRestClient Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    return _instance ?? (_instance = new UMRestClient(UMClientConfigurationSection.Settings, new IPHelperImpl(), new RestClient()));
+                }
+            }
         }
 
         public Task<T> ExecuteGetAsync<T>(string endPoint) => ExecuteAsync<T>(endPoint, Method.GET, null);
